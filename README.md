@@ -44,4 +44,4 @@ poetry run pytest
 
 ## License
 
-Like FreeDTS, pyFreeDTS is available under a CC-BY-NC-ND 4.0 International license
+Like FreeDTS, pyFreeDTS is available under a CC-BY-NC-ND 4.0 International license.
