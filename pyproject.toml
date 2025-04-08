@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "pyfreedts"
+version = "2.1.0"
+description = "Python wrapper for the FreeDTS C++ project"
+authors = ["Valentin Maurer <valentin.maurer@embl-hamburg.de>"]
+readme = "README.md"
+license = "CC-BY-NC-ND-4.0"
+packages = [{include = "pyfreedts", from = "src"}]
+include = [
+    "src/pyfreedts/_cpp/**/*",
+    "src/pyfreedts/_bin/**/*",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+black = "^23.3.0"
+isort = "^5.12.0"
+
+[tool.poetry.scripts]
+dts = "pyfreedts.cli:run_dts"
+cnv = "pyfreedts.cli:run_cnv"
+gen = "pyfreedts.cli:run_gen"
+
+[tool.poetry.build]
+script = "build.py"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest]
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+
+[tool.isort]
+profile = "black"
