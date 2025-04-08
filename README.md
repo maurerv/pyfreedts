@@ -1,14 +1,16 @@
 # pyFreeDTS
 
-pyFreeDTS is wrapper for the [FreeDTS C++ project](https://github.com/weria-pezeshkian/FreeDTS).
+pyFreeDTS is wrapper for the [FreeDTS C++ project](https://github.com/weria-pezeshkian/FreeDTS) and aims to simplify installing and interfacing with FreeDTS.
 
-## Prerequisites
+## Installation
+
+After ensuring your system satisfies the following requirements
 
 - Python 3.8+
 - C++ compiler with C++11 support
-- OpenMP (optional)
+- OpenMP (optional),
 
-## Installation
+you can install pyFreeDTS using pip
 
 ```bash
 pip install pyfreedts
@@ -16,7 +18,7 @@ pip install pyfreedts
 
 ## Usage
 
-The package provides command-line tools that mirror the original FreeDTS binaries, but are in lower-case to avoid collision.
+pyFreeDTS mirrors the original FreeDTS binaries, but changed the spelling to lower-ase to avoid collision
 
 ```bash
 dts arg1 arg2 ...
