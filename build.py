@@ -22,12 +22,15 @@ def check_openmp_support(compiler):
     test_file.write_text("#include <omp.h>\nint main() { return 0; }")
 
     try:
-        _ = subprocess.run(
+        ret = subprocess.run(
             [compiler, "-fopenmp", str(test_file), "-o", "/dev/null"],
             check=False,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
+        if ret.returncode != 0:
+            raise OSError(ret.stderr)
+
         print("OpenMP support detected.")
         return True
     except (subprocess.SubprocessError, OSError):
