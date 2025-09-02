@@ -81,7 +81,7 @@ screen_result/
 Clone and install with Poetry:
 
 ```bash
-git clone https://github.com/yourusername/pyfreedts.git
+git clone https://github.com/maurerv/pyfreedts.git
 cd pyfreedts
 poetry install
 ```
