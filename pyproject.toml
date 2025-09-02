@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyfreedts"
-version = "2.1.0"
+version = "2.1.0.post1"
 description = "Python wrapper for the FreeDTS C++ project"
 authors = ["Valentin Maurer <valentin.maurer@embl-hamburg.de>"]
 readme = "README.md"
@@ -21,6 +21,7 @@ isort = "^5.12.0"
 
 [tool.poetry.scripts]
 dts = "pyfreedts.cli:run_dts"
+dts_screen = "pyfreedts.cli:run_dts_screen"
 cnv = "pyfreedts.cli:run_cnv"
 gen = "pyfreedts.cli:run_gen"
 
@@ -40,3 +41,19 @@ target-version = ["py38"]
 
 [tool.isort]
 profile = "black"
+
+[tool.cibuildwheel]
+build = "cp38-* cp39-* cp310-* cp311-* cp312-*"
+skip = "*-win32 *-manylinux_i686 *-musllinux_*"
+build-verbosity = 3
+before-test = "ls -la /tmp/cibuildwheel/built_wheel/ || echo 'No wheel found'"
+test-command = "pytest {project}/tests"
+test-requires = "pytest"
+
+[tool.cibuildwheel.linux]
+manylinux-x86_64-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux2014"
+
+[tool.cibuildwheel.macos]
+skip = "cp38-macosx_* cp39-macosx_* cp310-macosx_* cp312-macosx_*"
+archs = ["arm64"]

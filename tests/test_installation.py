@@ -6,3 +6,4 @@ def test_run_functions():
     assert callable(pyfreedts.run_dts), "run_dts is not callable"
     assert callable(pyfreedts.run_cnv), "run_cnv is not callable"
     assert callable(pyfreedts.run_gen), "run_gen is not callable"
+    assert callable(pyfreedts.run_dts_screen), "run_dts_screen is not callable"
