@@ -43,7 +43,7 @@ A DTS screen based on such a template file can be performed using
 dts_screen \
     -in input_template.dts \
     --output-dir screen_result \
-    --dts-args "-top /absolute/path/to/topol.top -seed 12345" \
+    --dts-args "-top /absolute/path/to/topol.top -seed 12345 -e 100000" \
     --backend-args "-j 4 --keep-going" \
     --dry-run
 ```
@@ -55,7 +55,7 @@ pip install snakemake
 
 Through snakemake, DTS screens can be run locally and on all commonly available HPC platforms.
 
-> [!TIP]
+> [!IMPORTANT]
 > The topologies listed in topol.top need to be specified using their absolute path.
 
 Running the pipeline will generate numbered directories in `--output-dir`, each of which contains the result of a DTS run with corresponding params.json. A summary of all parameters and corresponding directories is given by `screen_summary.json` in the specified output directory.
@@ -75,6 +75,9 @@ screen_result/
     ├── dts_*
     └── completed.flag
 ```
+
+> [!IMPORTANT]
+> Every screen needs to run for at least 1000 steps (`-dts-args '-e 1000'`), due to an implementation detail in FreeDTS.
 
 ## For Developers
 

@@ -37,6 +37,7 @@ class SnakemakeBackend:
             exit("Error: Snakemake not available. Install with: pip install snakemake")
 
         self.runs = runs
+        self.resources =resources
         self.output_dir = output_dir
         self.dts_args = dts_args or ""
         self.backend_args = backend_args or ""
@@ -61,7 +62,7 @@ class SnakemakeBackend:
         except Exception:
             pass
 
-        resource_spec = "\n".join({f"{k}:{v}" for k,v in self.resources.items()}) + "\n"
+        resource_spec = ",".join({f"{k}={v}" for k,v in self.resources.items()})
 
         filtered_args = " ".join(filtered_args)
         run_ids = [run["run_id"] for run in self.runs]
@@ -91,13 +92,21 @@ class SnakemakeBackend:
                     run_dir = str(OUTPUT_DIR / "{{run_id}}"),
                     dts_args = {repr(filtered_args)}
                 threads: {n_threads}
-                resources:
-                    {resource_spec}
+                resources: {resource_spec}
                 shell:
                     """
                     cd {{params.run_dir}}
                     dts -in input.dts {{params.dts_args}}
-                    touch {{output.flag}}
+
+                    # Hacky solution at best but dts does not indicate failure for
+                    # incorrect arguments as of version 2.1
+                    if ls *.res 1> /dev/null 2>&1; then
+                        echo "DTS completed successfully - found .res file(s)"
+                        touch {{output.flag}}
+                    else
+                        echo "DTS failed - no .res file found" >&2
+                        exit 1
+                    fi
                     """
             '''
         ).strip()
