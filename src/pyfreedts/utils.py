@@ -3,10 +3,12 @@ Utility functions for pyFreeDTS.
 """
 
 import os
-import subprocess
 import sys
+import subprocess
 import importlib.resources
+
 from pathlib import Path
+from contextlib import contextmanager
 
 
 def get_binary_path(binary_name):
@@ -65,3 +67,32 @@ def run_binary(binary_name, args=None):
     except subprocess.CalledProcessError as e:
         print(f"Error running {binary_name}: {e}", file=sys.stderr)
         return e.returncode
+
+
+@contextmanager
+def suppress_stdout_stderr():
+    """Context manager to suppress all stdout and stderr output at the file descriptor level."""
+    original_stdout_fd = os.dup(1)
+    original_stderr_fd = os.dup(2)
+
+    devnull_fd = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(devnull_fd, 1)
+        os.dup2(devnull_fd, 2)
+
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        with open(os.devnull, "w") as devnull:
+            sys.stdout = devnull
+            sys.stderr = devnull
+            yield
+    finally:
+        os.dup2(original_stdout_fd, 1)
+        os.dup2(original_stderr_fd, 2)
+
+        sys.stdout = old_stdout
+        sys.stderr = old_stderr
+
+        os.close(devnull_fd)
+        os.close(original_stdout_fd)
+        os.close(original_stderr_fd)

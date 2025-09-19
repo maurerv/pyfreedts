@@ -20,7 +20,7 @@ class SnakemakeBackend:
         output_dir: Path,
         dts_args: Optional[str] = None,
         backend_args: Optional[str] = None,
-        resources : Optional[Dict] = {},
+        resources: Optional[Dict] = {},
     ):
         """
         Initialize Snakemake backend.
@@ -37,7 +37,7 @@ class SnakemakeBackend:
             exit("Error: Snakemake not available. Install with: pip install snakemake")
 
         self.runs = runs
-        self.resources =resources
+        self.resources = resources
         self.output_dir = output_dir
         self.dts_args = dts_args or ""
         self.backend_args = backend_args or ""
@@ -62,7 +62,7 @@ class SnakemakeBackend:
         except Exception:
             pass
 
-        resource_spec = ",".join({f"{k}={v}" for k,v in self.resources.items()})
+        resource_spec = ",".join({f"{k}={v}" for k, v in self.resources.items()})
 
         filtered_args = " ".join(filtered_args)
         run_ids = [run["run_id"] for run in self.runs]

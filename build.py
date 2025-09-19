@@ -3,9 +3,13 @@ Build script for FreeDTS.
 """
 
 import os
-import subprocess
 import shutil
+import subprocess
 from pathlib import Path
+
+import pybind11
+from pybind11.setup_helpers import Pybind11Extension, build_ext
+
 
 here = Path(__file__).resolve().parent
 
@@ -118,9 +122,24 @@ def compile_module(source_dir, output_name, compiler, compiler_flags, use_openmp
         os.chdir(original_dir)
 
 
-def build():
-    print("Starting FreeDTS C++ compilation...")
+def find_cpp_files(directory):
+    """Recursively find all .cpp files in a directory."""
+    cpp_files = []
+    directory = Path(directory)
 
+    if not directory.exists():
+        print(f"Warning: Directory {directory} does not exist")
+        return cpp_files
+
+    for cpp_file in directory.rglob("*.cpp"):
+        cpp_files.append(str(cpp_file))
+        print(f"Found C++ source: {cpp_file.relative_to(directory)}")
+
+    return cpp_files
+
+
+def build(setup_kwargs):
+    # Compile standalone modules
     compiler = select_compiler()
     compiler_flags = "-O3 -std=c++11"
     use_openmp = check_openmp_support(compiler)
@@ -133,8 +152,39 @@ def build():
     compile_module(CONVERT_DIR, "CNV", compiler, compiler_flags, use_openmp)
     compile_module(GENERATE_DIR, "GEN", compiler, compiler_flags, use_openmp)
 
-    print("All FreeDTS modules compiled successfully.")
+    # Compile bindings
+    source_files = find_cpp_files(SOURCE_DIR)
+    if not source_files:
+        print("Warning: No C++ source files found. Skipping Python bindings.")
+        return None
+
+    ext_modules = [
+        Pybind11Extension(
+            "pyfreedts._core",
+            [
+                str(here / "src" / "bindings.cpp"),
+                *source_files,
+            ],
+            include_dirs=[
+                str(SOURCE_DIR),
+                pybind11.get_include(),
+            ],
+            language="c++",
+            define_macros=[
+                ("VERSION_INFO", '"dev"'),
+            ],
+            extra_compile_args=["-O3", "-std=c++11"],
+        ),
+    ]
+
+    setup_kwargs.update(
+        {
+            "ext_modules": ext_modules,
+            "cmdclass": {"build_ext": build_ext},
+            "zip_safe": False,
+        }
+    )
 
 
 if __name__ == "__main__":
-    build()
+    build({})

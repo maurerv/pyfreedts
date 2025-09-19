@@ -27,9 +27,10 @@ gen = "pyfreedts.cli:run_gen"
 
 [tool.poetry.build]
 script = "build.py"
+generate-setup-file = true
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core", "setuptools", "pybind11", "numpy"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest]

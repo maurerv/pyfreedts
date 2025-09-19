@@ -201,16 +201,17 @@ class ScreenGenerator:
             json.dump(summary, f, indent=2)
 
 
-def _parse_key_value_str(value : str) -> Dict:
+def _parse_key_value_str(value: str) -> Dict:
     ret = {}
     if value is None:
         return ret
     value = value.strip()
-    for item in value.split(','):
-        if '=' in item:
-            key, value = item.split('=', 1)
+    for item in value.split(","):
+        if "=" in item:
+            key, value = item.split("=", 1)
             ret[key] = value
     return ret
+
 
 def main():
     """CLI entry point for DTS parameter screen."""
@@ -255,7 +256,7 @@ def main():
     parser.add_argument(
         "--resources",
         default="",
-        help="Resource specifications for cluster execution in KEY=VALUE format (e.g., \"mem_mb=4000,runtime=120\")",
+        help='Resource specifications for cluster execution in KEY=VALUE format (e.g., "mem_mb=4000,runtime=120")',
     )
 
     args = parser.parse_args()
@@ -273,7 +274,7 @@ def main():
         output_dir=output_path,
         dts_args=args.dts_args,
         backend_args=args.backend_args,
-        resources=_parse_key_value_str(args.resources)
+        resources=_parse_key_value_str(args.resources),
     )
     if not args.dry_run:
         return executor.run()
