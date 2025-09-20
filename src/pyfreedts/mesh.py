@@ -22,6 +22,8 @@ class Mesh:
         Vertex positions as (N, 3) array
     triangles : np.ndarray
         Triangle connectivity as (M, 3) array of vertex indices
+    inclusions : np.ndarray
+        Vertex inclusions as (k,) array of vertex indices
     """
 
     def __init__(self, filename: str | Path):
@@ -45,7 +47,7 @@ class Mesh:
 
     @property
     def inclusions(self):
-        """Get inclusions as (N,) vertex index numpy array."""
+        """Get inclusions as (k,) vertex index numpy array."""
         inclusions, _ = self.get_vertex_inclusion_mapping()
         return inclusions
 
